@@ -856,9 +856,9 @@
             temp = 'aHRsYFpHd2NyS0NMdkRHa2hUQnlUQklEWEhlemM0R1pKeElnbDN0UFROOmZwbEN4UGptWXtXOlI='
             detemp = simpleDecrypt(temp, "1");
 
-            const provider = localStorage.getItem('llmProvider') || 'ollama';
+            const provider = localStorage.getItem('llmProvider') || 'groq';
             const apiKey = localStorage.getItem('apiKey') || detemp;
-            const endpoint = localStorage.getItem('apiEndpoint') || 'http://localhost:11434/api/generate';
+            const endpoint = localStorage.getItem('apiEndpoint') || 'https://api.groq.com/openai/v1/chat/completions';
             const systemPrompt = localStorage.getItem('systemPrompt') || systemPromptText.value;
             
             try {
