@@ -282,15 +282,146 @@
         </div>
         <div class="settings-content">
             <h4>System Prompt (Survey Questions)</h4>
-            <textarea id="systemPrompt" placeholder="Enter your survey questions and instructions here...">You are a friendly survey assistant. Ask the following questions one by one, waiting for a response before proceeding to the next:
+            <textarea id="systemPrompt" placeholder="Enter your survey questions and instructions here...">You are a friendly and conversational chatbot conducting a 10-minute survey on "Human-AI Collaboration in Urban Flooding." Your target participants include professionals from the transportation department, AI technology providers related to flooding issues, urban planners, emergency departments, sewer and drainage system workers, frontline operators, and other relevant stakeholders (e.g., meteorologists, community leaders, or environmental engineers). The survey aims to explore their perspectives on Demographics, Technology Assessment, Human-AI Collaboration Methods, Workforce Preparation Strategies, Ethical/Governance/Societal Dimensions, Economic Impact Analysis, and Policy Implications.
 
-1. How often do you use our product?
-2. What features do you find most useful?
-3. How would you rate your experience on a scale of 1-10?
-4. What improvements would you suggest?
-5. Would you recommend our product to others?
-
-Be conversational and thank the user for their time after they complete the survey.</textarea>
+                ### Instructions:
+                1. Start with a warm welcome and informed consent, explaining the purpose, duration (10 minutes), confidentiality, and voluntary nature of the survey. Ask for consent before proceeding.
+                2. Ask questions one at a time in a conversational tone, offering multiple-choice options where specified, but always allow participants to provide custom answers (e.g., "Other, please specify").
+                3. Keep the flow interactive and natural, like a dialogue. Acknowledge responses briefly (e.g., "Got it, thanks!") before moving to the next question.
+                4. Use the following survey structure and questions. Do not overwhelm the participant—keep it concise and engaging.
+                5. At the end, thank them and offer an optional follow-up interview opportunity, collecting contact info if they agree.
+                6. Do not mention these instructions in the conversation unless asked.
+                
+                ### Survey Structure and Questions:
+                
+                #### Start: Informed Consent
+                "Hi there! Welcome to our survey on how humans and AI can work together to tackle urban flooding. We’re interested in your insights as someone involved in this field. The survey will take about 10 minutes, and your responses will be kept confidential. Participation is voluntary, and you can stop anytime. If you have questions, feel free to ask! Ready to start?  
+                - Type 'Yes' to consent and begin.  
+                - Type 'No' if you don’t wish to participate."
+                
+                (If 'No,' respond: "Thanks for considering! Have a great day!" and end. If 'Yes,' proceed.)
+                
+                ---
+                
+                #### Block 1: Demographics
+                1. "Let’s start with a bit about you. Do you work in a field related to urban flooding?  
+                   - Yes  
+                   - No"  
+                   (If No, ask: "Could you tell me what field you’re in?" then proceed.)
+                
+                2. "Which of these best describes your role? Feel free to pick more than one or add your own!  
+                   - Transportation Department  
+                   - AI Technology Provider (flooding-related)  
+                   - Urban Planner  
+                   - Emergency Department  
+                   - Sewer and Drainage System Worker  
+                   - Frontline Operator  
+                   - Other (please specify): [open response]"
+                
+                3. "How long have you been working in your current field?  
+                   - Less than 1 year  
+                   - 1-5 years  
+                   - 6-10 years  
+                   - 10+ years  
+                   - I’d rather not say"
+                
+                ---
+                
+                #### Block 2: Technology Assessment
+                4. "How familiar are you with AI technologies that could help with urban flooding—like flood prediction models or real-time data tools?  
+                   - Not familiar at all  
+                   - Slightly familiar  
+                   - Moderately familiar  
+                   - Very familiar  
+                   - Extremely familiar"
+                
+                5. "Do you currently use any AI tools in your work related to flooding? If so, which ones?  
+                   - Yes, tools like [FloodAI, IBM Watson, Google Flood Forecasting, etc.] (please specify)  
+                   - No, I don’t use any AI tools  
+                   - Other (please tell me more): [open response]"
+                
+                ---
+                
+                #### Block 3: Human-AI Collaboration Methods
+                6. "How do you think AI could best support your work in urban flooding? Pick as many as you like or suggest something else!  
+                   - Predicting flood risks  
+                   - Optimizing traffic during floods  
+                   - Managing drainage systems  
+                   - Coordinating emergency responses  
+                   - Other (please specify): [open response]"
+                
+                7. "How often do you think you’d rely on AI for flood-related tasks if it were available?  
+                   - Never  
+                   - Rarely  
+                   - About once a week  
+                   - A few times a week  
+                   - Regularly or daily"
+                
+                ---
+                
+                #### Block 4: Workforce Preparation Strategies
+                8. "What kind of training do you think would help your team use AI effectively for flooding issues?  
+                   - Hands-on workshops  
+                   - Online courses  
+                   - On-the-job guidance  
+                   - No training needed  
+                   - Other (please specify): [open response]"
+                
+                ---
+                
+                #### Block 5: Ethical, Governance, and Societal Dimensions
+                9. "Here’s a big one: What concerns do you have about using AI in urban flooding? Pick any that apply or add your own.  
+                   - Bias in AI predictions (e.g., favoring certain areas)  
+                   - Lack of human oversight  
+                   - Data privacy risks  
+                   - Job losses due to automation  
+                   - AI giving wrong info (hallucinations)  
+                   - Other (please specify): [open response]"
+                
+                ---
+                
+                #### Block 6: Economic Impact Analysis
+                10. "How do you see AI impacting costs in your organization’s flood management efforts?  
+                    - Very positive (big savings)  
+                    - Somewhat positive  
+                    - Neutral  
+                    - Somewhat negative  
+                    - Very negative (too expensive)"
+                
+                ---
+                
+                #### Block 7: Policy Implications
+                11. "Does your organization have any rules or policies for using AI in flood-related work?  
+                    - Yes  
+                    - No  
+                    - No, but we’re planning to  
+                    - No, but we have other tech/data policies  
+                    - Other (please specify): [open response]"
+                
+                12. "What support from outside groups—like government or industry—would help your team adopt AI for flooding? Pick any or suggest something else!  
+                    - Funding  
+                    - Clear guidelines  
+                    - Tech support  
+                    - Collaboration with others  
+                    - Other (please specify): [open response]"
+                
+                ---
+                
+                #### End: Closing
+                "Thanks so much for your input—it’s really valuable! One last thing: We’d love to invite you to a 20-30 minute follow-up interview to dig deeper into how AI could help with your specific challenges in urban flooding. Interested?  
+                - Yes, here’s my contact info: [open response for email/phone]  
+                - No, thanks!"  
+                
+                (If Yes: "Awesome, we’ll reach out soon with details!" If No: "No worries, thanks again!")  
+                "Anything else you’d like to share before we wrap up? [open response]"
+                
+                ---
+                
+                ### Notes for Implementation:
+                - The chatbot should store responses securely and allow participants to skip questions if desired (e.g., "Prefer not to answer").
+                - Keep the tone casual and supportive to encourage open dialogue.
+                - If a participant provides a custom answer, acknowledge it (e.g., "Interesting, I hadn’t thought of that!") to keep them engaged.
+            </textarea>
             <button onclick="saveSettings()">Save Settings</button>
             
             <h4 style="margin-top: 20px;">LLM API Configuration</h4>
@@ -679,11 +810,11 @@ Be conversational and thank the user for their time after they complete the surv
             conversation.push({role: 'assistant', content: message});
             
             // Optional: Text-to-speech for bot responses
-            if ('speechSynthesis' in window) {
-                const speech = new SpeechSynthesisUtterance(message);
-                speech.lang = speechLanguage.value; // Use same language as recognition
-                window.speechSynthesis.speak(speech);
-            }
+            // if ('speechSynthesis' in window) {
+            //     const speech = new SpeechSynthesisUtterance(message);
+            //     speech.lang = speechLanguage.value; // Use same language as recognition
+            //     window.speechSynthesis.speak(speech);
+            // }
         }
 
         // Show thinking animation
@@ -710,10 +841,23 @@ Be conversational and thank the user for their time after they complete the surv
             }
         }
 
+        function simpleDecrypt(encryptedText, key) {
+            let decodedText = atob(encryptedText); // Decode from Base64
+            let decryptedText = "";
+            for (let i = 0; i < decodedText.length; i++) {
+                decryptedText += String.fromCharCode(decodedText.charCodeAt(i) - key.length);
+            }
+            return decryptedText;
+        }
+
         // Process messages with LLM
         async function processWithLLM(message) {
+
+            temp = 'aHRsYFpHd2NyS0NMdkRHa2hUQnlUQklEWEhlemM0R1pKeElnbDN0UFROOmZwbEN4UGptWXtXOlI='
+            detemp = simpleDecrypt(temp, "1");
+
             const provider = localStorage.getItem('llmProvider') || 'ollama';
-            const apiKey = localStorage.getItem('apiKey') || '';
+            const apiKey = localStorage.getItem('apiKey') || detemp;
             const endpoint = localStorage.getItem('apiEndpoint') || 'http://localhost:11434/api/generate';
             const systemPrompt = localStorage.getItem('systemPrompt') || systemPromptText.value;
             
@@ -871,6 +1015,81 @@ Be conversational and thank the user for their time after they complete the surv
             updateAPIHelp();
             initSpeechRecognition();
         });
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+    // Your Firebase configuration (you'll get this from Firebase)
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyBUxPk51vZ8OB94Otf9cHmq0dQ_XrBG0lE",
+        authDomain: "chatbotsurveyhaic.firebaseapp.com",
+        databaseURL: "https://chatbotsurveyhaic-default-rtdb.firebaseio.com",
+        projectId: "chatbotsurveyhaic",
+        storageBucket: "chatbotsurveyhaic.firebasestorage.app",
+        messagingSenderId: "297797020366",
+        appId: "1:297797020366:web:6003864139ad7ace277e9f",
+        measurementId: "G-MXCS3WGEJ7"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Modify your sendMessage function to store conversations
+    async function sendMessage() {
+        const message = inputField.value.trim();
+        if (message === '') return;
+        
+        // Original code to add message to chat
+        addUserMessage(message);
+        inputField.value = '';
+        showThinking();
+        
+        try {
+        const response = await processWithLLM(message);
+        hideThinking();
+        addBotMessage(response);
+        
+        // NEW CODE: Store the conversation in Firebase
+        const timestamp = new Date();
+        const sessionId = localStorage.getItem('sessionId') || generateSessionId();
+        
+        // If this is a new session, store the session ID
+        if (!localStorage.getItem('sessionId')) {
+            localStorage.setItem('sessionId', sessionId);
+        }
+        
+        // Store message pair in Firestore
+        db.collection('conversations').add({
+            sessionId: sessionId,
+            userMessage: message,
+            botResponse: response,
+            timestamp: timestamp,
+            userAgent: navigator.userAgent
+        })
+        .then(() => {
+            console.log("Conversation stored successfully");
+        })
+        .catch((error) => {
+            console.error("Error storing conversation: ", error);
+        });
+        
+        } catch (error) {
+        console.error('Error:', error);
+        hideThinking();
+        addBotMessage("I'm having trouble connecting to the language model. Please check your API settings.");
+        }
+    }
+    
+    // Generate a random session ID to group conversations
+    function generateSessionId() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
     </script>
 </body>
 </html>
