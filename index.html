@@ -29,7 +29,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 80vh;
+            height: 77vh;
         }
 
         .chat-header {
@@ -78,6 +78,18 @@
             background-color: #f1f1f1;
             margin-right: auto;
             border-bottom-left-radius: 5px;
+        }
+
+        /* Add this to your existing CSS */
+        .bot-message {
+            white-space: pre-wrap; /* This preserves line breaks */
+            line-height: 1.5; /* Increases line spacing */
+            max-width: 90%; /* Ensures messages don't stretch too wide */
+            padding: 12px 12px; /* More padding for better spacing */
+        }
+
+        .bot-message p {
+            margin-bottom: 2px; /* Adds space between paragraphs */
         }
 
         .thinking {
@@ -802,6 +814,11 @@
         function addBotMessage(message) {
             const botDiv = document.createElement('div');
             botDiv.className = 'message bot-message';
+
+            // Instead of using textContent, use innerHTML with formatting
+            // This will preserve line breaks by converting them to <br> tags
+            botDiv.innerHTML = message.replace(/\n/g, '<br>');
+            
             botDiv.textContent = message;
             chatBody.appendChild(botDiv);
             chatBody.scrollTop = chatBody.scrollHeight;
@@ -954,8 +971,24 @@
                 } else if (provider === 'groq') {
                     responseText = data.choices[0].message.content;
                 }
+
+                // Format the response with line breaks for better readability
+                let formattedResponse = responseText;
                 
-                return responseText || "I couldn't process your message. Please try again.";
+                // Option 1: Simple sentence-based formatting (add line breaks after periods)
+                // formattedResponse = formattedResponse.replace(/\.\s+/g, '.\n\n');
+                
+                // Option 2: Split long paragraphs (more than 150 chars without breaks)
+                // const paragraphs = formattedResponse.split('\n');
+                // formattedResponse = paragraphs.map(para => {
+                //     if (para.length > 150) {
+                //         // Try to break at sentence boundaries
+                //         return para.replace(/\.\s+/g, '.\n');
+                //     }
+                //     return para;
+                // }).join('\n\n');
+                
+                return formattedResponse || "I couldn't process your message. Please try again.";
                 
             } catch (error) {
                 console.error('Error processing with LLM:', error);
