@@ -513,9 +513,220 @@
                 page-break-inside: avoid;
             }
         }
+
+        /* Add these styles before the existing styles */
+        .consent-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .consent-content {
+            max-width: 800px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .consent-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #4a6fa5;
+        }
+
+        .consent-section {
+            margin-bottom: 20px;
+        }
+
+        .consent-section h3 {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+        }
+
+        .consent-section p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .consent-options {
+            margin: 20px 0;
+        }
+
+        .consent-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .consent-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .consent-option label {
+            cursor: pointer;
+        }
+
+        .consent-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+
+        .consent-button {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .consent-button.agree {
+            background-color: #4a6fa5;
+            color: white;
+        }
+
+        .consent-button.disagree {
+            background-color: #f1f1f1;
+            color: #666;
+        }
+
+        .consent-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .consent-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Hide chat interface initially */
+        .container {
+            display: none;
+        }
+
+        /* Dark mode support for consent page */
+        @media (prefers-color-scheme: dark) {
+            .consent-page {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+
+            .consent-title, .consent-section h3 {
+                color: #6a8fa5;
+            }
+
+            .consent-button.disagree {
+                background-color: #3a3a3a;
+                color: #e0e0e0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Add consent page before the container -->
+    <div class="consent-page" id="consentPage">
+        <div class="consent-content">
+            <h1 class="consent-title">Online Consent</h1>
+            
+            <div class="consent-section">
+                <p>This survey is part of a research study conducted by Dr. Jinfeng Lou at Carnegie Mellon University and is funded by Carnegie Bosch Institute.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Summary</h3>
+                <p>This study examines how professionals in urban flooding management interact with artificial intelligence (AI) tools and how human-AI collaboration can improve flood response and mitigation efforts. The study is designed to gather insights from professionals in transportation, emergency response, urban planning, AI development, and other related fields.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Purpose</h3>
+                <p>The purpose of this research is to explore how human-AI collaboration can enhance decision-making, preparedness, and response to urban flooding. Understanding these interactions will help improve AI technologies and policies that support flood management.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Procedures</h3>
+                <p>Participation in this study involves completing a 10-minute online survey facilitated by an AI-powered chatbot. The survey consists of multiple-choice and open-ended questions about your experience, perspectives on AI tools, and opinions on human-AI collaboration in flood management.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Participant Requirements</h3>
+                <ul>
+                    <li>Participation is limited to individuals 18 years or older.</li>
+                    <li>Participants must be professionals involved in urban flooding-related fields, such as transportation departments, AI technology providers, urban planners, emergency services, sewer and drainage workers, frontline operators, meteorologists, or other relevant stakeholders.</li>
+                </ul>
+            </div>
+
+            <div class="consent-section">
+                <h3>Risks</h3>
+                <p>The risks and discomfort associated with participation in this study are no greater than those ordinarily encountered in daily life or during other online activities. Your responses will be confidential, and no personally identifiable information will be shared.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Benefits</h3>
+                <p>There may be no personal benefit from your participation in the study but the knowledge received will contribute to advancements in AI-assisted flood management, benefiting urban infrastructure and emergency response planning.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Compensation & Costs</h3>
+                <p>There is no compensation for participation in this study. There will be no cost to you if you participate in this study.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Future Use of Information</h3>
+                <p>Your anonymous responses may be used in future research studies on human-AI collaboration and flood management. De-identified data may also be shared with other researchers for academic purposes. All identifiable information will be removed.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Confidentiality</h3>
+                <p>The data captured for the research does not include any personally identifiable information about you. Your IP address will not be captured. Research data will be securely stored and retained for a minimum of three years as per regulations. If a sponsor or regulatory authority requests access to the study data, only de-identified information will be shared.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Right to Ask Questions & Contact Information</h3>
+                <p>If you have any questions about this study, you should feel free to ask them by contacting the Principal Investigator now at Dr. Jinfeng Lou, Department of Civil and Environmental Engineering, Pittsburgh, Pennsylvania, 15213, 412-320-6522, jinfengl@andrew.cmu.edu.</p>
+                <p>If you have questions pertaining to your rights as a research participant; or to report concerns to this study, you should contact the Office of Research integrity and Compliance at Carnegie Mellon University. Email: irb-review@andrew.cmu.edu. Phone: 412-268-1901 or 412-268-5460.</p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Voluntary Participation</h3>
+                <p>Your participation in this research is voluntary. You may discontinue participation at any time during the research activity. You may print a copy of this consent form for your records.</p>
+            </div>
+
+            <div class="consent-options">
+                <div class="consent-option">
+                    <input type="radio" id="age18" name="age18" value="yes">
+                    <label for="age18">I am 18 or older.</label>
+                </div>
+                <div class="consent-option">
+                    <input type="radio" id="understand" name="understand" value="yes">
+                    <label for="understand">I have read and understand the information above.</label>
+                </div>
+                <div class="consent-option">
+                    <input type="radio" id="participate" name="participate" value="yes">
+                    <label for="participate">I want to participate in this research and continue with the survey.</label>
+                </div>
+            </div>
+
+            <div class="consent-buttons">
+                <button class="consent-button agree" id="agreeButton" disabled>I Agree</button>
+                <button class="consent-button disagree" id="disagreeButton">I Do Not Agree</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Existing container div -->
     <div class="container">
         <div class="chat-header">
             <span>Survey Chatbot</span>
@@ -1358,11 +1569,54 @@
             }
         });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        // Add this at the beginning of your script section
+        const consentPage = document.getElementById('consentPage');
+        const container = document.querySelector('.container');
+        const agreeButton = document.getElementById('agreeButton');
+        const disagreeButton = document.getElementById('disagreeButton');
+        const consentOptions = document.querySelectorAll('.consent-option input[type="radio"]');
+
+        // Check if user has already consented
+        if (localStorage.getItem('hasConsented') === 'true') {
+            showChatInterface();
+        }
+
+        // Enable/disable agree button based on all options being selected
+        consentOptions.forEach(option => {
+            option.addEventListener('change', checkConsent);
+        });
+
+        function checkConsent() {
+            const allSelected = Array.from(consentOptions).every(option => option.checked);
+            agreeButton.disabled = !allSelected;
+        }
+
+        // Handle agree button click
+        agreeButton.addEventListener('click', () => {
+            localStorage.setItem('hasConsented', 'true');
+            showChatInterface();
+        });
+
+        // Handle disagree button click
+        disagreeButton.addEventListener('click', () => {
+            alert('Thank you for your interest. You must agree to participate to continue with the survey.');
+        });
+
+        function showChatInterface() {
+            consentPage.style.display = 'none';
+            container.style.display = 'flex';
+            // Initialize chat interface
             loadSettings();
             updateAPIHelp();
             initSpeechRecognition();
+        }
+
+        // Modify the existing DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only initialize if user has already consented
+            if (localStorage.getItem('hasConsented') === 'true') {
+                showChatInterface();
+            }
         });
     </script>
 
