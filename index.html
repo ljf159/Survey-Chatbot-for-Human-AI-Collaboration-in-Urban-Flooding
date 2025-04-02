@@ -168,6 +168,9 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: height 0.1s ease;
             box-sizing: border-box;
+            -webkit-appearance: none; /* Remove iOS default styling */
+            appearance: none;
+            -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
         }
 
         .voice-btn, .send-btn {
@@ -415,6 +418,15 @@
                 position: sticky;
                 bottom: 0;
                 margin-bottom: env(safe-area-inset-bottom);
+            }
+            
+            .input-field {
+                font-size: 16px; /* Prevent zoom on focus */
+                line-height: 1.5;
+                padding-top: 12px;
+                padding-bottom: 12px;
+                min-height: 44px;
+                max-height: 120px;
             }
         }
 
@@ -1002,135 +1014,170 @@
         function initSpeechRecognition() {
             // Check if SpeechRecognition is available
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                
-                // Load saved speech recognition settings
-                const savedLanguage = localStorage.getItem('speechLanguage') || 'en-US';
-                const savedContinuous = localStorage.getItem('continuousSpeech') === 'true';
-                
-                speechLanguage.value = savedLanguage;
-                continuousSpeech.checked = savedContinuous;
-                
-                // Configure speech recognition
-                recognition.lang = savedLanguage;
-                recognition.continuous = savedContinuous;
-                recognition.interimResults = true; // Enable interim results for real-time feedback
-                
-                // Handle speech recognition events
-                recognition.onstart = function() {
-                    isListening = true;
-                    voiceBtn.classList.add('active');
-                    speechStatus.classList.add('active');
-                    speechStatus.textContent = 'Listening...';
-                    inputField.placeholder = 'Speak now...';
-                };
-                
-                recognition.onresult = function(event) {
-                    const interimTranscript = '';
-                    let finalTranscript = '';
+                try {
+                    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
                     
-                    // Combine results
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            finalTranscript += event.results[i][0].transcript;
+                    // Load saved speech recognition settings
+                    const savedLanguage = localStorage.getItem('speechLanguage') || 'en-US';
+                    const savedContinuous = localStorage.getItem('continuousSpeech') === 'true';
+                    
+                    speechLanguage.value = savedLanguage;
+                    continuousSpeech.checked = savedContinuous;
+                    
+                    // Configure speech recognition with error handling
+                    try {
+                        recognition.lang = savedLanguage;
+                        recognition.continuous = savedContinuous;
+                        recognition.interimResults = true;
+                    } catch (configError) {
+                        console.error('Error configuring speech recognition:', configError);
+                        // Fallback to default settings if configuration fails
+                        recognition.lang = 'en-US';
+                        recognition.continuous = false;
+                        recognition.interimResults = true;
+                    }
+                    
+                    // Handle speech recognition events
+                    recognition.onstart = function() {
+                        isListening = true;
+                        voiceBtn.classList.add('active');
+                        speechStatus.classList.add('active');
+                        speechStatus.textContent = 'Listening...';
+                        inputField.placeholder = 'Speak now...';
+                    };
+                    
+                    recognition.onresult = function(event) {
+                        const interimTranscript = '';
+                        let finalTranscript = '';
+                        
+                        // Combine results
+                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                finalTranscript += event.results[i][0].transcript;
+                            } else {
+                                interimTranscript += event.results[i][0].transcript;
+                            }
+                        }
+                        
+                        // Get current cursor position
+                        const start = inputField.selectionStart;
+                        const end = inputField.selectionEnd;
+                        const currentText = inputField.value;
+                        
+                        // Insert new text at cursor position
+                        if (finalTranscript !== '') {
+                            inputField.value = currentText.substring(0, start) + finalTranscript + currentText.substring(end);
+                            // Set cursor position after inserted text
+                            inputField.selectionStart = inputField.selectionEnd = start + finalTranscript.length;
                         } else {
-                            interimTranscript += event.results[i][0].transcript;
+                            inputField.value = currentText.substring(0, start) + interimTranscript + currentText.substring(end);
+                            // Set cursor position after inserted text
+                            inputField.selectionStart = inputField.selectionEnd = start + interimTranscript.length;
                         }
-                    }
-                    
-                    // Get current cursor position
-                    const start = inputField.selectionStart;
-                    const end = inputField.selectionEnd;
-                    const currentText = inputField.value;
-                    
-                    // Insert new text at cursor position
-                    if (finalTranscript !== '') {
-                        inputField.value = currentText.substring(0, start) + finalTranscript + currentText.substring(end);
-                        // Set cursor position after inserted text
-                        inputField.selectionStart = inputField.selectionEnd = start + finalTranscript.length;
-                    } else {
-                        inputField.value = currentText.substring(0, start) + interimTranscript + currentText.substring(end);
-                        // Set cursor position after inserted text
-                        inputField.selectionStart = inputField.selectionEnd = start + interimTranscript.length;
-                    }
 
-                    // Reset silence timer when speech is detected
-                    if (silenceTimer) {
-                        clearTimeout(silenceTimer);
-                    }
-                    
-                    // Set new silence timer (2 seconds)
-                    silenceTimer = setTimeout(() => {
-                        if (isListening) {
-                            recognition.stop();
-                            isListening = false;
-                            voiceBtn.classList.remove('active');
-                            speechStatus.classList.remove('active');
-                            inputField.placeholder = 'Type your response here...';
+                        // Reset silence timer when speech is detected
+                        if (silenceTimer) {
+                            clearTimeout(silenceTimer);
                         }
-                    }, 2000); // 2 seconds of silence before stopping
-                };
-                
-                recognition.onerror = function(event) {
-                    console.error('Speech recognition error', event.error);
-                    isListening = false;
-                    voiceBtn.classList.remove('active');
-                    speechStatus.classList.remove('active');
-                    inputField.placeholder = 'Type your response here...';
+                        
+                        // Set new silence timer (2 seconds)
+                        silenceTimer = setTimeout(() => {
+                            if (isListening) {
+                                recognition.stop();
+                                isListening = false;
+                                voiceBtn.classList.remove('active');
+                                speechStatus.classList.remove('active');
+                                inputField.placeholder = 'Type your response here...';
+                            }
+                        }, 2000);
+                    };
                     
-                    // Display user-friendly error message
-                    let errorMessage = "There was an error with speech recognition.";
+                    recognition.onerror = function(event) {
+                        console.error('Speech recognition error:', event.error);
+                        isListening = false;
+                        voiceBtn.classList.remove('active');
+                        speechStatus.classList.remove('active');
+                        inputField.placeholder = 'Type your response here...';
+                        
+                        // Enhanced error handling with more specific messages
+                        let errorMessage = "There was an error with speech recognition.";
+                        
+                        switch(event.error) {
+                            case 'no-speech':
+                                errorMessage = "No speech was detected. Please try again.";
+                                break;
+                            case 'aborted':
+                                errorMessage = "Speech recognition was aborted.";
+                                break;
+                            case 'audio-capture':
+                                errorMessage = "No microphone was found or microphone is disabled. Please check your browser settings.";
+                                break;
+                            case 'network':
+                                errorMessage = "Network error occurred. This might be due to browser settings or network restrictions. Please try using Chrome or Safari.";
+                                break;
+                            case 'not-allowed':
+                            case 'service-not-allowed':
+                                errorMessage = "Microphone access denied. Please allow microphone access in your browser settings.";
+                                break;
+                            default:
+                                errorMessage = `Speech recognition error: ${event.error}. Please try using Chrome or Safari.`;
+                        }
+                        
+                        // Add error message to chat
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'message bot-message';
+                        errorDiv.textContent = errorMessage;
+                        chatBody.appendChild(errorDiv);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    };
                     
-                    switch(event.error) {
-                        case 'no-speech':
-                            errorMessage = "No speech was detected. Please try again.";
-                            break;
-                        case 'aborted':
-                            errorMessage = "Speech recognition was aborted.";
-                            break;
-                        case 'audio-capture':
-                            errorMessage = "No microphone was found or microphone is disabled.";
-                            break;
-                        case 'network':
-                            errorMessage = "Network error occurred. Please check your connection.";
-                            break;
-                        case 'not-allowed':
-                        case 'service-not-allowed':
-                            errorMessage = "Microphone access denied. Please allow microphone access.";
-                            break;
-                    }
+                    recognition.onend = function() {
+                        isListening = false;
+                        voiceBtn.classList.remove('active');
+                        speechStatus.classList.remove('active');
+                        inputField.placeholder = 'Type your response here...';
+                        
+                        // Auto-restart for continuous mode if user hasn't manually stopped
+                        if (recognition.continuous && isListening) {
+                            try {
+                                recognition.start();
+                            } catch (error) {
+                                console.error('Error restarting recognition:', error);
+                            }
+                        }
+                    };
+                    
+                    // Event listeners for speech recognition settings
+                    speechLanguage.addEventListener('change', function() {
+                        try {
+                            recognition.lang = this.value;
+                            localStorage.setItem('speechLanguage', this.value);
+                        } catch (error) {
+                            console.error('Error changing language:', error);
+                        }
+                    });
+                    
+                    continuousSpeech.addEventListener('change', function() {
+                        try {
+                            recognition.continuous = this.checked;
+                            localStorage.setItem('continuousSpeech', this.checked);
+                        } catch (error) {
+                            console.error('Error changing continuous mode:', error);
+                        }
+                    });
+                    
+                } catch (initError) {
+                    console.error('Error initializing speech recognition:', initError);
+                    // Hide voice button if initialization fails
+                    voiceBtn.style.display = 'none';
                     
                     // Add error message to chat
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'message bot-message';
-                    errorDiv.textContent = errorMessage;
+                    errorDiv.textContent = "Speech recognition is not supported in your browser. Please use Chrome or Safari for voice input.";
                     chatBody.appendChild(errorDiv);
                     chatBody.scrollTop = chatBody.scrollHeight;
-                };
-                
-                recognition.onend = function() {
-                    isListening = false;
-                    voiceBtn.classList.remove('active');
-                    speechStatus.classList.remove('active');
-                    inputField.placeholder = 'Type your response here...';
-                    
-                    // Auto-restart for continuous mode if user hasn't manually stopped
-                    if (recognition.continuous && isListening) {
-                        recognition.start();
-                    }
-                };
-                
-                // Event listeners for speech recognition settings
-                speechLanguage.addEventListener('change', function() {
-                    recognition.lang = this.value;
-                    localStorage.setItem('speechLanguage', this.value);
-                });
-                
-                continuousSpeech.addEventListener('change', function() {
-                    recognition.continuous = this.checked;
-                    localStorage.setItem('continuousSpeech', this.checked);
-                });
-                
+                }
             } else {
                 // Hide voice button if speech recognition is not supported
                 voiceBtn.style.display = 'none';
@@ -1139,7 +1186,7 @@
                 // Add message to chat
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'message bot-message';
-                errorDiv.textContent = "Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari for voice input.";
+                errorDiv.textContent = "Speech recognition is not supported in your browser. Please use Chrome or Safari for voice input.";
                 chatBody.appendChild(errorDiv);
                 chatBody.scrollTop = chatBody.scrollHeight;
             }
@@ -1558,7 +1605,27 @@
             
             // Set new height based on scrollHeight, but not exceeding maxHeight
             const newHeight = Math.min(this.scrollHeight, maxHeight);
+            
+            // Force a reflow to ensure proper height calculation
+            this.offsetHeight;
+            
+            // Set the new height
             this.style.height = `${Math.max(44, newHeight)}px`;
+            
+            // Force a reflow again to ensure the height is applied
+            this.offsetHeight;
+        });
+
+        // Add focus event listener to handle iOS keyboard
+        inputField.addEventListener('focus', function() {
+            // Force a reflow to ensure proper height calculation
+            this.offsetHeight;
+        });
+
+        // Add blur event listener to handle iOS keyboard
+        inputField.addEventListener('blur', function() {
+            // Force a reflow to ensure proper height calculation
+            this.offsetHeight;
         });
 
         // Modify the keypress event listener for textarea
