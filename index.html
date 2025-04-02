@@ -13,13 +13,24 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        :root {
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
         body {
             background-color: #f9f9f9;
             min-height: 100vh;
+            min-height: -webkit-fill-available; /* For iOS Safari */
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            padding-bottom: calc(20px + var(--safe-area-inset-bottom));
+        }
+
+        /* Fix for mobile Safari */
+        html {
+            height: -webkit-fill-available;
         }
 
         .container {
@@ -31,7 +42,9 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 90vh;
+            height: 90vh; /* Default height */
+            height: calc(90vh - var(--safe-area-inset-bottom)); /* Adjust for safe area */
+            max-height: -webkit-fill-available;
         }
 
         .chat-header {
@@ -145,11 +158,12 @@
             font-size: 1rem;
             resize: none;
             min-height: 44px;
-            max-height: 120px;
+            max-height: 120px; /* Approximately 4 lines of text */
             overflow-y: auto;
             line-height: 1.5;
             font-family: inherit;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: height 0.1s ease;
         }
 
         .voice-btn, .send-btn {
@@ -333,40 +347,70 @@
             
             .container {
                 height: 100vh;
+                height: calc(100vh - var(--safe-area-inset-bottom));
+                max-height: -webkit-fill-available;
                 border-radius: 0;
             }
             
             .chat-header {
                 padding: 10px 12px;
+                padding-top: max(10px, env(safe-area-inset-top));
                 font-size: 1rem;
+                position: sticky;
+                top: 0;
+                z-index: 10;
             }
             
             .chat-body {
                 padding: 12px;
-            }
-            
-            .message {
-                max-width: 100%;
-                padding: 8px 12px;
+                flex: 1;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
             
             .chat-input {
                 padding: 10px;
+                padding-bottom: max(10px, env(safe-area-inset-bottom));
+                position: sticky;
+                bottom: 0;
+                background-color: #f1f1f1;
+                z-index: 10;
             }
             
             .input-field {
                 padding: 8px 12px;
-                font-size: 0.9rem;
+                font-size: 16px; /* Prevent iOS zoom on focus */
+                max-height: 100px;
             }
             
             .voice-btn, .send-btn {
                 width: 36px;
                 height: 36px;
+                min-width: 36px; /* Prevent shrinking */
+                min-height: 36px;
             }
             
-            .settings-panel {
-                width: 100%;
-                right: -100%;
+            /* Ensure the speech status doesn't get hidden */
+            .speech-status {
+                bottom: calc(80px + var(--safe-area-inset-bottom));
+            }
+        }
+
+        /* iOS specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .container {
+                height: -webkit-fill-available;
+            }
+            
+            .chat-body {
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .chat-input {
+                position: sticky;
+                bottom: 0;
+                margin-bottom: env(safe-area-inset-bottom);
             }
         }
 
@@ -1231,10 +1275,24 @@
         // Add auto-resize functionality for textarea
         inputField.addEventListener('input', function() {
             // Reset height to auto to get the correct scrollHeight
-            this.style.height = 'auto';
-            // Set new height based on scrollHeight, but not exceeding max-height
-            const newHeight = Math.min(this.scrollHeight, 120);
+            this.style.height = '0';
+            
+            // Get the computed line height
+            const computedStyle = window.getComputedStyle(this);
+            const lineHeight = parseFloat(computedStyle.lineHeight);
+            
+            // Calculate maximum height (4 lines plus padding)
+            const padding = parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+            const maxHeight = (lineHeight * 4) + padding;
+            
+            // Set new height based on scrollHeight, but not exceeding maxHeight
+            const newHeight = Math.min(this.scrollHeight, maxHeight);
             this.style.height = newHeight + 'px';
+            
+            // Ensure minimum height
+            if (newHeight < 44) {
+                this.style.height = '44px';
+            }
         });
 
         // Modify the keypress event listener for textarea
