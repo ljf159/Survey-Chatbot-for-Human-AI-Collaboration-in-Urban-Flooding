@@ -776,7 +776,7 @@
                 ### Survey Questions:
                 
                 #### Block 1: Demographics
-                1. "**What’s your role and experience in urban flooding or related fields?** For example:"  
+                1. "**What's your role and experience in urban flooding or related fields?** For example:"  
                    - **Roles**: Transportation, AI Tech, Urban Planner, Emergency, Sewer/Drainage, Frontline, Other (e.g., meteorologist).  
                    - **Experience**: <1 year, 1-5 years, 6-10 years, 10+ years, or other.  
                    - Feel free to answer in your own words!
@@ -799,14 +799,14 @@
                    - Please also share which collaboration methods you think would be effective!
                 
                 #### Block 4: Workforce Preparation
-                5. "**What’s needed to prepare your team for AI in flooding, and how’s your organization doing? Any gaps?** For example:"  
+                5. "**What's needed to prepare your team for AI in flooding, and how's your organization doing? Any gaps?** For example:"  
                    - **Strategies**: Technical training, data skills, AI oversight roles, upskilling, ethical training, or other.  
                    - **Preparedness**: Strongly disagree, Somewhat disagree, Neutral, Somewhat agree, Strongly agree.  
                    - **Gaps**: More training, leadership, or other.  
                    - Your perspective on gaps or challenges is valuable!
                 
                 #### Block 5: Ethical, Governance, Societal Issues
-                6. "**What ethical/societal concerns matter in human-AI collaboration for flooding, and how confident are you in your organization’s handling?** For example:"  
+                6. "**What ethical/societal concerns matter in human-AI collaboration for flooding, and how confident are you in your organization's handling?** For example:"  
                    - **Concerns**: Bias, human oversight, data privacy, job losses, transparency, equity, community impact, or other.  
                    - **Confidence**: Not at all, Slightly, Moderately, Very, Extremely.  
                    - Feel free to share other concerns not listed!
@@ -1216,11 +1216,14 @@
                 apiEndpointInput.value = savedEndpoint;
             }
             
-            // Initialize with welcome message
-            setTimeout(() => {
-                addBotMessage("Hello! I'm your survey assistant. I'll be asking you a few questions about your experience. Type or speak your responses. Let's begin!");
-                processSurvey();
-            }, 500);
+            // Only show welcome message if this is the first time loading
+            if (!localStorage.getItem('welcomeShown')) {
+                setTimeout(() => {
+                    addBotMessage("Hello! I'm your survey assistant. I'll be asking you a few questions about your experience. Type or speak your responses. Let's begin!");
+                    processSurvey();
+                    localStorage.setItem('welcomeShown', 'true');
+                }, 500);
+            }
         }
 
         // Save settings to local storage
@@ -1552,7 +1555,6 @@
         function resetConversation() {
             conversation = [];
             chatBody.innerHTML = '';
-            addBotMessage("Hello! I'm your survey assistant. I'll be asking you a few questions about your experience. Type or speak your responses. Let's begin!");
             processSurvey();
         }
 
