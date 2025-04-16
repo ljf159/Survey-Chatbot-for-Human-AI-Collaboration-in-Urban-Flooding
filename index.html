@@ -1216,14 +1216,11 @@
                 apiEndpointInput.value = savedEndpoint;
             }
             
-            // Only show welcome message if this is the first time loading
-            if (!localStorage.getItem('welcomeShown')) {
-                setTimeout(() => {
-                    addBotMessage("Hello! I'm your survey assistant. I'll be asking you a few questions about your experience. Type or speak your responses. Let's begin!");
-                    processSurvey();
-                    localStorage.setItem('welcomeShown', 'true');
-                }, 500);
-            }
+            // Initialize with welcome message
+            setTimeout(() => {
+                addBotMessage("Hello! I'm your survey assistant. I'll be asking you a few questions about your experience. Type or speak your responses. Let's begin!");
+                processSurvey();
+            }, 500);
         }
 
         // Save settings to local storage
@@ -1555,6 +1552,7 @@
         function resetConversation() {
             conversation = [];
             chatBody.innerHTML = '';
+            addBotMessage("Hello! I'm your survey assistant. I'll be asking you a few questions about your experience. Type or speak your responses. Let's begin!");
             processSurvey();
         }
 
@@ -1622,6 +1620,9 @@
         const agreeButton = document.getElementById('agreeButton');
         const disagreeButton = document.getElementById('disagreeButton');
         const consentOptions = document.querySelectorAll('.consent-option input[type="radio"]');
+        
+        // Add a flag to prevent multiple initializations
+        let hasInitialized = false;
 
         // Check if user has already consented
         if (localStorage.getItem('hasConsented') === 'true') {
@@ -1650,6 +1651,10 @@
         });
 
         function showChatInterface() {
+            // Prevent multiple initializations
+            if (hasInitialized) return;
+            hasInitialized = true;
+
             consentPage.style.display = 'none';
             container.style.display = 'flex';
             // Initialize chat interface
